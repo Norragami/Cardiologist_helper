@@ -13,6 +13,11 @@ part 'patient_cubit.freezed.dart';
 
 class PatientCubit extends Cubit<PatientState> {
   Repository repository = GetIt.I.get<Repository>();
+  PatientCubit() : super(const PatientState.initial()) {
+    repository
+        .getPatients()
+        .listen((value) => emit(PatientState.success(value)));
+  }
 
   final form = fb.group(
     {
@@ -41,18 +46,22 @@ class PatientCubit extends Cubit<PatientState> {
       ),
       'email': FormControl<String>(
         value: '',
+        validators: [],
       ),
       'filepath': FormControl<MultiFile<String>>(
         value: const MultiFile<String>(
           files: [],
           platformFiles: [],
-
         ),
-
-
       ),
     },
   );
+
+  final queryForm = fb.group({
+    'query': FormControl<String>(
+      value: '',
+    )
+  });
 
   void addPatient(int? id) {
     if (form.valid) {
@@ -61,22 +70,24 @@ class PatientCubit extends Cubit<PatientState> {
         name: form.control('name').value,
         lastname: form.control('lastname').value,
         patronymic: form.control('patronymic').value,
-        sex: form.control('sex').value ==0? 'Мужской': 'Женский',
+        sex: form.control('sex').value == 0 ? 'Мужской' : 'Женский',
         birthday: form.control('birthday').value,
       );
-      
 
-      repository
-          .insertPatient(item)
-          .then(onPatientUpdate);
+      if (id == null) {
+        repository.insertPatient(item).then(onPatientUpdate);
+      } else {
+        repository.updatePatient(item).then((value) => onPatientUpdate(id));
+        
 
-
-
+      }
     }
   }
 
-    void onPatientUpdate(int patientId) {
+  void onPatientUpdate(int patientId) {
     repository.deletePatientSignalsWithPatientId(patientId);
+    repository.deletePatientContactsWithpatientId(patientId);
+    print('on patient update');
     if (form.control('filepath').value != null) {
       var files =
           (form.control('filepath').value as MultiFile<String>).platformFiles;
@@ -88,28 +99,50 @@ class PatientCubit extends Cubit<PatientState> {
           eventDate: DateTime.now(),
         ));
       }
+    }
+    
     var contacts = Contact(
-        id: -1,
-        patientId: patientId,
-        phone: form.control('phone').value,
-        email: form.control('email').value,);
+      id: -1,
+      patientId: patientId,
+      phone: form.control('phone').value,
+      email: form.control('email').value,
+    );
+
 
     repository.insertContacts(contacts);
     
-    }
+    
+
     form.reset();
   }
 
+  void deletePatient(Patient item) async {
+    await repository.deletePatient(item);
+    repository.deletePatientSignalsWithPatientId(item.id);
+    repository.deletePatientContactsWithpatientId(item.id);
+  }
 
+  void selectPatient(Patient item) async {
+    var filelist = await repository.getpatientsSignalsWithpatientId(item.id);
+    var contacts = await repository.getContactsWithPatientId(item.id);
+    form.control('name').value = item.name;
+    form.control('lastname').value = item.lastname;
+    form.control('patronymic').value = item.patronymic;
+    form.control('birthday').value = item.birthday;
+    form.control('sex').value = item.sex == 'Мужской' ? 0 : 1;
+    form.control('phone').value = contacts[0].phone;
+    form.control('email').value = contacts[0].email;
+    form.control('filepath').value = MultiFile<String>(
+      platformFiles: [
+        ...filelist
+            .map((e) => PlatformFile(path: e.fileName, name: '', size: 0)),
+      ],
+    );
+  }
 
-
-
-
-
-
-  PatientCubit() : super(PatientState.initial()) {
+  void searchPatient(String query) async {
     repository
-        .getPatients()
-        .listen((value) => emit(PatientState.success(value)));
+        .getPatientsWithSearch(query)
+        .then((value) => emit(PatientState.success(value)));
   }
 }

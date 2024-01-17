@@ -47,19 +47,6 @@ class NavigationDrawerWidget extends StatelessWidget {
               builder: (_) => const HomePage(),
             ));
       case 1:
-        // showDialog(
-        //     context: context,
-        //     builder: (BuildContext context) {
-        //       return Dialog(
-        //         child: Container(
-        //           height: 600,
-        //           width: 500,
-        //           color: Colors.blue.shade400,
-        //           child:  const AnalysisPage(),
-        //         ),
-
-        //       );
-        //     });
       Navigator.push(
           context,
           MaterialPageRoute(

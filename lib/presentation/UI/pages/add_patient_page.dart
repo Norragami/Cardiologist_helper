@@ -8,14 +8,15 @@ import '../../../domain/Classes/file_picker_support.dart';
 import '../../cubits/patient/cubit/patient_cubit.dart';
 
 class AddPatientPage extends StatelessWidget {
-  const AddPatientPage({super.key});
+  const AddPatientPage({super.key, this.id});
+  final int? id;
 
   @override
   Widget build(BuildContext context) {
     var cubit = context.read<PatientCubit>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Добавить пациента'),
+        title: id==null?const Text('Добавление нового пациента'):const Text('Изменение данных пациента'),
         backgroundColor: Colors.blue.shade400,
         centerTitle: true,
       ),
@@ -91,7 +92,7 @@ class AddPatientPage extends StatelessWidget {
                             ),
                             child: ReactiveDropdownField<int>(
                               decoration: const InputDecoration(
-                                // border: OutlineInputBorder(),
+                                
                                 prefixIcon: Icon(Icons.person),
                               ),
                               formControlName: 'sex',
@@ -198,7 +199,7 @@ class AddPatientPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 if (cubit.form.valid) {
-                  cubit.addPatient(null);
+                  cubit.addPatient(id);
                   Navigator.pop(context);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
