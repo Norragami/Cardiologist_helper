@@ -1,16 +1,21 @@
 import 'package:cardeologist_helper/data/local/database.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:reactive_file_picker/reactive_file_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../domain/methods.dart';
+
+import '../../cubits/patient/cubit/patient_cubit.dart';
+import '../../cubits/signal/cubit/signal_cubit.dart';
 import '../widgets/navigation_drawer.dart';
 
 class AnalysisPage extends StatelessWidget {
-  const AnalysisPage({super.key, required this.patient, required this.files});
+  const AnalysisPage({super.key, required this.patient});
   final Patient? patient;
-  final List<PlatformFile>? files;
+
   @override
   Widget build(BuildContext context) {
+    var patientCubit = context.read<PatientCubit>();
+    var signalCubit = context.read<SignalCubit>();
     return Scaffold(
       drawer: const NavigationDrawerWidget(),
       appBar: AppBar(
@@ -42,28 +47,65 @@ class AnalysisPage extends StatelessWidget {
                     ),
                     width: 500,
                     margin: const EdgeInsets.fromLTRB(5, 5, 5, 0),
-                    child: ListView.builder(
-                      itemCount: files?.length,
-                      itemBuilder: (_, i) {
-                        return ListTile(
-                          title: Text(files?[i].name ?? "No name"),
-                          subtitle: Text(files?[i].path ?? "No path"),
-                          onTap: () {
-                            loadCSVData(files?[i].path).then((value) => {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(value[0][0]),
-                                )
-                              )
-                            });
-                          },
-                        );
-                      },
-                    ),
+                    child: BlocBuilder<SignalCubit, SignalState>(
+                        builder: (context, state) => state.when(
+                            initial: () => const Text('Файлы отсутствуют'),
+                            print: (p0) => const Text ('Файлы отсутствуют'),
+                            loaded: (files) => ListView.builder(
+                                itemCount: files.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    title: Text(files[index].fileName),
+                                    onTap: () {
+                                      signalCubit.loadCSVData(files[index].fileName)
+                                          .then((value) {
+                                            signalCubit.emit(SignalState.print(value));
+                                      });
+                                    },
+                                  );
+                                }))),
                   ),
                 ),
               ],
             ),
+            const SizedBox(
+              width: 16.0,
+            ),
+            Expanded(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 42,
+                  ),
+                  Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.blue,
+                        ),
+                      ),
+                      child: BlocBuilder<SignalCubit, SignalState>(
+                        builder: (context, state) => state.when(
+                          initial: () => const Text('Файлы отсутствуют'),
+                          loaded: (files) => const Text('Выберите файл для отображения'),
+                          print: (data)=> ScaffoldMessenger(child: Text(data[2][1].toString())),
+
+                          // SizedBox(
+                          //   height: 400,
+                          //   child: LineChart(
+                          //     LineChartData(
+                          //       lineBarsData: [
+                          //         LineChartBarData(
+                          //           spots: [FlSpot(0, data[1][0]), FlSpot(1, data[2][0])],
+                          //         )
+                          //       ]
+                          //     )
+                          //   )
+                          // )
+                        )
+                      )),
+                ],
+              ),
+            )
           ],
         ),
       ),

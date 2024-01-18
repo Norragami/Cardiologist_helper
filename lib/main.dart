@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:fullscreen_window/fullscreen_window.dart';
+
 import 'package:get_it/get_it.dart';
 
 import 'domain/repositories/repository.dart';
@@ -11,6 +11,7 @@ import 'package:window_manager/window_manager.dart';
 import 'dart:io';
 
 import 'presentation/cubits/patient/cubit/patient_cubit.dart';
+import 'presentation/cubits/signal/cubit/signal_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +55,7 @@ class MainApp extends StatelessWidget {
         return MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => PatientCubit()),
+            BlocProvider(create: (context) => SignalCubit()),
           ],
           child: child!,
         );

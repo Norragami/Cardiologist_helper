@@ -1,3 +1,4 @@
+import 'package:cardeologist_helper/presentation/cubits/signal/cubit/signal_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -13,6 +14,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var patientCubit = context.read<PatientCubit>();
+    var signalCubit = context.read<SignalCubit>();
     return Scaffold(
       drawer: const NavigationDrawerWidget(),
       appBar: AppBar(
@@ -145,14 +147,15 @@ class HomePage extends StatelessWidget {
                                           tooltip: 'Перейти к анализу сигналов',
                                             icon: const Icon(Icons.timeline),
                                             onPressed: () {
-                                              patientCubit
-                                                  .selectPatient(items[index]);
+                                              // patientCubit
+                                              //     .selectPatient(items[index]);
                                               // final files = patientCubit.getListofFiles();
+                                              signalCubit.getFiles(items[index]);
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (_) => AnalysisPage(
-                                                      patient: items[index], files:patientCubit.getListofFiles()),
+                                                      patient: items[index]),
                                                 ),
                                               );
                                             }),

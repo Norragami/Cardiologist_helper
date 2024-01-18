@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 
+
 import '../../data/local/database.dart';
 
 class Repository {
@@ -70,6 +71,12 @@ class Repository {
 
 deletePatient(Patient patient) =>
       database.delete(database.patients).delete(patient);
+
+Future<List<PatientSignal>> getFiles(Patient patient) =>
+      (database.select(database.patientSignals)
+            ..where((tbl) => tbl.patientId.equals(patient.id)))
+          .get();
+  
 
 
 
