@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:fullscreen_window/fullscreen_window.dart';
 import 'package:get_it/get_it.dart';
 
 import 'domain/repositories/repository.dart';
@@ -12,7 +14,6 @@ import 'presentation/cubits/patient/cubit/patient_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   GetIt.I.registerSingleton<Repository>(Repository());
 
   if (Platform.isWindows) {

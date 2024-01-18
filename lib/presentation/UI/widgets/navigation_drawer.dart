@@ -50,7 +50,7 @@ class NavigationDrawerWidget extends StatelessWidget {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => const AnalysisPage(),
+            builder: (_) => const AnalysisPage(patient: null,files: [],),
           ));
 
       case 2:

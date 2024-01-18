@@ -27,6 +27,8 @@ dependencies:
   json_annotation: ^4.8.1
   json_serializable: ^6.7.1
   flutter_close_app: ^1.0.0
+  fullscreen_window: ^1.0.4
+  csv: ^5.1.1
 
 dev_dependencies:
   flutter_test:

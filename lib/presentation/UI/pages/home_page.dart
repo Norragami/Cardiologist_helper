@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -6,6 +5,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import '../../cubits/patient/cubit/patient_cubit.dart';
 import '../widgets/navigation_drawer.dart';
 import 'add_patient_page.dart';
+import 'signals_analysis_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -30,27 +30,22 @@ class HomePage extends StatelessWidget {
                   const SizedBox(
                     width: 24.0,
                   ),
-                  // const Text(
-                  //   'Пациенты',
-                  //   style: TextStyle(fontSize: 18.0),
-                  // ),
                   Container(
                     width: 500,
                     margin: const EdgeInsets.fromLTRB(10.0, 10.0, 10, 0),
                     child: ReactiveForm(
-                      
                       formGroup: patientCubit.queryForm,
                       child: ReactiveTextField<String>(
                         formControlName: 'query',
-                        onChanged: (control) => patientCubit.searchPatient(patientCubit.queryForm.control('query').value),
+                        onChanged: (control) => patientCubit.searchPatient(
+                            patientCubit.queryForm.control('query').value),
                         decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.search),
-                          hintText: 'Поиск по имени и фамилии',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(color:Colors.blue),
-                          )
-                        ),
+                            prefixIcon: const Icon(Icons.search),
+                            hintText: 'Поиск по имени и фамилии',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              borderSide: const BorderSide(color: Colors.blue),
+                            )),
                       ),
                     ),
                   ),
@@ -109,46 +104,68 @@ class HomePage extends StatelessWidget {
                                 //         DataCell(Text(items[0].patronymic??'')),
                                 //         DataCell(Text(items[0].sex)),
                                 //         DataCell(Text('${items[0].birthday.day}.${items[0].birthday.month}.${items[0].birthday.year}')),
-                                  
+
                                 //       ]),
                                 //     ],
-                                                  
+
                                 //   ),
                                 // ),
                                 child: ListView.builder(
                                   itemCount: items.length,
                                   itemBuilder: (context, index) => ListTile(
                                     shape: const RoundedRectangleBorder(
-                                      // borderRadius: BorderRadius.
-                                      side:  BorderSide(
-                                        color: Colors.blue,
-                                        width: 0.5,
-                                      )
-                                    ),
+                                        // borderRadius: BorderRadius.
+                                        side: BorderSide(
+                                      color: Colors.blue,
+                                      width: 0.5,
+                                    )),
                                     title: Text(
-                                        '${items[index].lastname} ${items[index].name} ${items[index].patronymic??'                        '}             Пол: ${items[index].sex}              Дата рождения: ${items[index].birthday.day}.${items[index].birthday.month}.${items[index].birthday.year}'),
+                                        '${items[index].lastname} ${items[index].name} ${items[index].patronymic ?? '                        '}             Пол: ${items[index].sex}              Дата рождения: ${items[index].birthday.day}.${items[index].birthday.month}.${items[index].birthday.year}'),
                                     // subtitle: Text(items[index].lastname),
                                     onTap: () {
                                       patientCubit.selectPatient(items[index]);
-                                       showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                child: Container(
-                                  height: double.maxFinite,
-                                  width: 1500,
-                                  color: Colors.blue.shade400,
-                                  child:  AddPatientPage(id:items[index].id),
-                                ),
-                              );
-                            });
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return Dialog(
+                                              child: Container(
+                                                height: double.maxFinite,
+                                                width: 1500,
+                                                color: Colors.blue.shade400,
+                                                child: AddPatientPage(
+                                                    id: items[index].id),
+                                              ),
+                                            );
+                                          });
                                     },
-                                    trailing: IconButton(
-                                        icon: const Icon(Icons.delete),
-                                        onPressed: () {
-                                          patientCubit
-                                              .deletePatient(items[index]);
-                                        }),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          tooltip: 'Перейти к анализу сигналов',
+                                            icon: const Icon(Icons.timeline),
+                                            onPressed: () {
+                                              patientCubit
+                                                  .selectPatient(items[index]);
+                                              // final files = patientCubit.getListofFiles();
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => AnalysisPage(
+                                                      patient: items[index], files:patientCubit.getListofFiles()),
+                                                ),
+                                              );
+                                            }),
+                                            const SizedBox(width: 8),
+                                        IconButton(
+                                            tooltip: 'Удалить пациента',
+                                            icon: const Icon(Icons.delete),
+                                            onPressed: () {
+                                              patientCubit
+                                                  .deletePatient(items[index]);
+                                            }),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -163,6 +180,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
-
 }

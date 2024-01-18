@@ -145,4 +145,9 @@ class PatientCubit extends Cubit<PatientState> {
         .getPatientsWithSearch(query)
         .then((value) => emit(PatientState.success(value)));
   }
+
+List<PlatformFile> getListofFiles(){
+  return (form.control('filepath').value as MultiFile<String>).platformFiles;
+}
+  
 }
