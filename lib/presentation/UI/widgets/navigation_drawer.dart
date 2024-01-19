@@ -1,10 +1,10 @@
 import 'package:cardeologist_helper/presentation/UI/pages/home_page.dart';
+import 'package:cardeologist_helper/presentation/UI/pages/info_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_close_app/flutter_close_app.dart';
 
-import '../../cubits/signal/cubit/signal_cubit.dart';
-import '../pages/signals_analysis_page.dart';
+
 
 class NavigationDrawerWidget extends StatelessWidget {
   const NavigationDrawerWidget({super.key});
@@ -24,8 +24,8 @@ class NavigationDrawerWidget extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             buildMenuitem(
-              text: 'Анализ сигналов',
-              icon: Icons.timeline,
+              text: 'О программе',
+              icon: Icons.notes,
               onClicked: () => selectedItem(context, 1),
             ),
             const SizedBox(height: 24),
@@ -41,7 +41,7 @@ class NavigationDrawerWidget extends StatelessWidget {
   }
 
   void selectedItem(BuildContext context, int index) {
-    var signalCubit = context.read<SignalCubit>();
+
     Navigator.of(context).pop();
     switch (index) {
       case 0:
@@ -51,11 +51,11 @@ class NavigationDrawerWidget extends StatelessWidget {
               builder: (_) => const HomePage(),
             ));
       case 1:
-      signalCubit.emit( const  SignalState.initial());
+
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => const AnalysisPage(patient: null),
+            builder: (_) => const InfoPage(),
           ));
 
       case 2:

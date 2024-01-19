@@ -78,8 +78,6 @@ class PatientCubit extends Cubit<PatientState> {
         repository.insertPatient(item).then(onPatientUpdate);
       } else {
         repository.updatePatient(item).then((value) => onPatientUpdate(id));
-        
-
       }
     }
   }
@@ -87,7 +85,6 @@ class PatientCubit extends Cubit<PatientState> {
   void onPatientUpdate(int patientId) {
     repository.deletePatientSignalsWithPatientId(patientId);
     repository.deletePatientContactsWithpatientId(patientId);
-    print('on patient update');
     if (form.control('filepath').value != null) {
       var files =
           (form.control('filepath').value as MultiFile<String>).platformFiles;
@@ -100,7 +97,7 @@ class PatientCubit extends Cubit<PatientState> {
         ));
       }
     }
-    
+
     var contacts = Contact(
       id: -1,
       patientId: patientId,
@@ -108,10 +105,7 @@ class PatientCubit extends Cubit<PatientState> {
       email: form.control('email').value,
     );
 
-
     repository.insertContacts(contacts);
-    
-    
 
     form.reset();
   }
@@ -146,8 +140,7 @@ class PatientCubit extends Cubit<PatientState> {
         .then((value) => emit(PatientState.success(value)));
   }
 
-List<PlatformFile> getListofFiles(){
-  return (form.control('filepath').value as MultiFile<String>).platformFiles;
-}
-  
+  List<PlatformFile> getListofFiles() {
+    return (form.control('filepath').value as MultiFile<String>).platformFiles;
+  }
 }

@@ -30,6 +30,8 @@ dependencies:
   fullscreen_window: ^1.0.4
   csv: ^5.1.1
   fl_chart: ^0.66.0
+  pdf: ^3.10.7
+  printing: ^5.11.1
 
 dev_dependencies:
   flutter_test:
@@ -41,3 +43,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+
+  assets:
+    - assets/fonts/font_bold.ttf
+    - assets/fonts/font_regular.ttf

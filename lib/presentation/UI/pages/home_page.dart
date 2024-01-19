@@ -52,30 +52,30 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(
-                    width: 24.0,
+                    height: 8.0,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton.icon(
-                      label: const Text('Добавить пациента'),
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        patientCubit.form.reset();
-
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                child: Container(
-                                  height: double.maxFinite,
-                                  width: 1500,
-                                  color: Colors.blue.shade400,
-                                  child: const AddPatientPage(),
-                                ),
-                              );
-                            });
-                      },
-                    ),
+                  ElevatedButton.icon(
+                    label: const Text('Добавить пациента'),
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      patientCubit.form.reset();
+                  
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              child: Container(
+                                height: double.maxFinite,
+                                width: 1500,
+                                color: Colors.blue.shade400,
+                                child: const AddPatientPage(),
+                              ),
+                            );
+                          });
+                    },
+                  ),
+                  const SizedBox(
+                    height: 8.0,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -122,8 +122,8 @@ class HomePage extends StatelessWidget {
                                       width: 0.5,
                                     )),
                                     title: Text(
-                                        '${items[index].lastname} ${items[index].name} ${items[index].patronymic ?? '                        '}             Пол: ${items[index].sex}              Дата рождения: ${items[index].birthday.day}.${items[index].birthday.month}.${items[index].birthday.year}'),
-                                    // subtitle: Text(items[index].lastname),
+                                        '${items[index].lastname} ${items[index].name} ${items[index].patronymic ?? '             '}             Пол: ${items[index].sex}              Дата рождения: ${items[index].birthday.day}.${items[index].birthday.month}.${items[index].birthday.year}'),
+                                   
                                     onTap: () {
                                       patientCubit.selectPatient(items[index]);
                                       showDialog(
@@ -150,6 +150,7 @@ class HomePage extends StatelessWidget {
                                               // patientCubit
                                               //     .selectPatient(items[index]);
                                               // final files = patientCubit.getListofFiles();
+                                              signalCubit.reportForm.reset();
                                               signalCubit.getFiles(items[index]);
                                               Navigator.push(
                                                 context,
